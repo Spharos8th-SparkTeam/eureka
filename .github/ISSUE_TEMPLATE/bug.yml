@@ -1,0 +1,87 @@
+
+name: "🐛 버그 및 오류 신고"
+description: "발견된 오류나 비정상적인 동작을 신고합니다."
+title: "[Bug] "
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        발생한 문제를 재현할 수 있도록 작성해 주세요.
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: "📦 발생 서비스"
+      options:
+        - "User Service"
+        - "Product Service"
+        - "Trade Service"
+        - "Payment Service"
+        - "Gateway"
+        - "Eureka Server"
+        - "Frontend (Next.js)"
+        - "Infrastructure"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "🚨 오류 내용"
+      description: "어떤 문제가 발생했나요?"
+      placeholder: "예) 로그인 시 500 Internal Server Error 발생"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "🔄 재현 방법"
+      placeholder: |
+        1. 로그인 페이지 접속
+        2. 계정 정보 입력
+        3. 로그인 버튼 클릭
+        4. 오류 발생
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "✅ 예상 동작"
+      description: "정상적인 경우 어떻게 동작해야 하나요?"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "⚠️ 심각도"
+      options:
+        - "Critical - 서비스 사용 불가"
+        - "High - 주요 기능 장애"
+        - "Medium - 일부 기능 오류"
+        - "Low - 경미한 오류"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "📋 오류 로그 및 스크린샷"
+      description: "민감정보를 제거한 로그나 이미지를 첨부해 주세요."
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "🔍 확인 사항"
+      options:
+        - label: "중복된 버그 이슈가 없는지 확인했습니다."
+          required: true
