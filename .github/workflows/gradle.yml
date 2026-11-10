@@ -43,9 +43,6 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_TAG: ${{ github.run_number }}
         run: |
-          $env:DOCKER_PASSWORD | docker login -u $env:DOCKER_USERNAME --password-stdin
-          if ($LASTEXITCODE -ne 0) { exit 1 }
-
           $image = "$env:DOCKER_USERNAME/eureka:$env:IMAGE_TAG"
 
           docker pull $image
