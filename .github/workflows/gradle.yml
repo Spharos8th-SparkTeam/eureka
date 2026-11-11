@@ -43,19 +43,28 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           IMAGE_TAG: ${{ github.run_number }}
         run: |
+          $ErrorActionPreference = "Continue"
+          $PSNativeCommandUseErrorActionPreference = $false
+
           $image = "$env:DOCKER_USERNAME/eureka:$env:IMAGE_TAG"
 
           docker pull $image
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
-          docker network inspect spharos 2>$null
-          if ($LASTEXITCODE -ne 0) {
+          $network = @(
+            docker network ls --format "{{.Name}}" |
+              Where-Object { $_ -eq "spharos" }
+          )
+          if ($network.Count -eq 0) {
             docker network create spharos
             if ($LASTEXITCODE -ne 0) { exit 1 }
           }
 
-          docker container inspect eureka 2>$null
-          if ($LASTEXITCODE -eq 0) {
+          $container = @(
+            docker ps -a --filter "name=eureka" --format "{{.Names}}" |
+              Where-Object { $_ -eq "eureka" }
+          )
+          if ($container.Count -gt 0) {
             docker rm -f eureka
             if ($LASTEXITCODE -ne 0) { exit 1 }
           }
