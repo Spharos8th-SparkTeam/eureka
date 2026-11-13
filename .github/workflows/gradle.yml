@@ -8,21 +8,22 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    types: [closed]
+    branches: ["main", "develop"]
 
 permissions:
   contents: read
 
 jobs:
   CI-CD:
-    if: github.event_name == 'push'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
 
       - name: docker build & docker hub push
         run: |
@@ -30,13 +31,13 @@ jobs:
           docker build -t "${{ secrets.DOCKER_USERNAME }}/eureka:${{ github.run_number }}" .
           docker push "${{ secrets.DOCKER_USERNAME }}/eureka:${{ github.run_number }}"
 
-  Deploy:
+  Deploy-Dev:
     needs: CI-CD
-    if: github.event_name == 'push'
+    if: github.event.pull_request.base.ref == 'develop'
     runs-on: [self-hosted, Windows, X64]
 
     steps:
-      - name: Deploy to prod
+      - name: Deploy to develop
         shell: powershell
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
